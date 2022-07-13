@@ -1,0 +1,33 @@
+version: '3.4'
+services:
+  abndb:
+    image: postgres:9.6    
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+    container_name: abndb
+    environment:
+      POSTGRES_PASSWORD: recipe
+      POSTGRES_USER: recipe
+      POSTGRES_DB: recipedb
+      SCHEMA: abnamro
+    volumes:
+      - ./docker/sql/bash.sh:/docker-entrypoint-initdb.d/bash.sh
+  abnamro:
+    build:
+        dockerfile: docker/dev.Dockerfile
+        context: .        
+    container_name: abnamro
+    ports:
+      - "9091:9091"
+    networks:
+      - backend
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_DB_HOSTNAME: abndb
+    depends_on:
+      - abndb
+    
+networks:
+  backend:

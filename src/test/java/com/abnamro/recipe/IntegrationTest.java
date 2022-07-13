@@ -1,4 +1,5 @@
-import com.abnamro.recipe.RecipeApplication;
+package com.abnamro.recipe;
+
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.annotation.ElementType;

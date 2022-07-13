@@ -1,4 +1,4 @@
-package rest;
+package com.abnamro.recipe.rest;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,5 +1,6 @@
-package rest;
+package com.abnamro.recipe.rest;
 
+import com.abnamro.recipe.IntegrationTest;
 import com.abnamro.recipe.controller.RecipeResource;
 import com.abnamro.recipe.domain.Recipe;
 import com.abnamro.recipe.domain.enumeration.DishType;

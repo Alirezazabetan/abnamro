@@ -83,7 +83,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-data-rest</artifactId>
+			<artifactId>springdoc-openapi-data-com.abnamro.domain.rest</artifactId>
 			<version>1.6.4</version>
 		</dependency>
 

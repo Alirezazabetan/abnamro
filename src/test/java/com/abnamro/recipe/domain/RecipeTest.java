@@ -1,6 +1,5 @@
-package domain;
+package com.abnamro.recipe.domain;
 
-import com.abnamro.recipe.domain.Recipe;
 import com.abnamro.recipe.rest.TestUtil;
 import org.junit.jupiter.api.Test;
 

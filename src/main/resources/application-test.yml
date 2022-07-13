@@ -1,0 +1,26 @@
+server:
+  port: 9091
+  
+spring:
+  h2:
+    console:
+      enabled: true
+  messages:
+    use-code-as-default-message: true
+  datasource:
+    url: jdbc:h2:mem:mydb;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS abnamro
+    username: sa
+    password: recipe
+    driverClassName: org.h2.Driver
+  jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    open-in-view: false
+
+logging:
+  level:
+    root: INFO  
+
+recipe:
+  populatedb: true
+  

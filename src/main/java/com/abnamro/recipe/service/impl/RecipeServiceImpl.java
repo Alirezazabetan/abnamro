@@ -9,6 +9,7 @@ import com.abnamro.recipe.service.dto.RecipeDTO;
 import com.abnamro.recipe.service.dto.SearchCriteria;
 import com.abnamro.recipe.service.mapper.RecipeMapper;
 import com.abnamro.recipe.service.specification.FilterFactorySpecification;
+import com.abnamro.recipe.service.specification.RecipeCriteriaBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -35,9 +36,12 @@ public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeMapper recipeMapper;
 
-    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeMapper recipeMapper) {
+    private final RecipeCriteriaBuilder recipeCriteriaBuilder;
+
+    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeMapper recipeMapper, RecipeCriteriaBuilder recipeCriteriaBuilder) {
         this.recipeRepository = recipeRepository;
         this.recipeMapper = recipeMapper;
+        this.recipeCriteriaBuilder = recipeCriteriaBuilder;
     }
 
     @Override
@@ -80,32 +84,12 @@ public class RecipeServiceImpl implements RecipeService {
     @Transactional(readOnly = true)
     public Page<RecipeDTO> search(Pageable pageable, DishType dishType, String servings, Ingredient excludeIngredient, Ingredient includeIngredient, String instruction) {
         log.debug("Request to search on Recipe with params : dishType {}, servings {}, excludeIngredient {}, includeIngredient {}, instruction {}", dishType, servings, excludeIngredient, includeIngredient, instruction);
-        FilterFactorySpecification contentSpecification = new FilterFactorySpecification(getSearchCriteria(dishType, servings, excludeIngredient, includeIngredient, instruction));
+        FilterFactorySpecification contentSpecification = new FilterFactorySpecification(recipeCriteriaBuilder.getSearchCriteria(dishType, servings, excludeIngredient, includeIngredient, instruction));
         Page<Recipe> resultList = recipeRepository.findAll((root, query, criteriaBuilder) -> {
             return contentSpecification.getSpecification(root, query, criteriaBuilder);
         }, pageable);
 
         List<RecipeDTO> collect = resultList.stream().map(recipeMapper::toDto).collect(Collectors.toList());
         return new PageImpl<>(collect, pageable, resultList.getTotalElements());
-    }
-
-    private List<SearchCriteria> getSearchCriteria(DishType dishType, String servings, Ingredient excludeIngredient, Ingredient includeIngredient, String instruction) {
-        List<SearchCriteria> searchCriteria = new ArrayList<>();
-        if (dishType != null) {
-            searchCriteria.add(new SearchCriteria("dishType", ":", dishType));
-        }
-        if (servings != null && !servings.equals("")) {
-            searchCriteria.add(new SearchCriteria("servings", ":", servings));
-        }
-        if (instruction != null && !instruction.equals("")) {
-            searchCriteria.add(new SearchCriteria("instruction", "%", instruction));
-        }
-        if (includeIngredient != null) {
-            searchCriteria.add(new SearchCriteria("ingredients", "in", includeIngredient));
-        }
-        if (excludeIngredient != null) {
-            searchCriteria.add(new SearchCriteria("ingredients", "xin", excludeIngredient));
-        }
-        return searchCriteria;
     }
 }
